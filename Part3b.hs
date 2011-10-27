@@ -5,10 +5,11 @@ import Data.List (isInfixOf)
 import Data.Maybe (listToMaybe)
 
 tvShows :: [(Int, String)] -- a list of pairs
-tvShows = 
+tvShows =
   [ (1966, "Star Trek")
   , (1969, "Monty Python's Flying Circus")
   , (1989, "The Simpsons")
+  , (2005, "Judging Amy")
   ]
 
 showForYear :: Int -> Maybe String
@@ -39,9 +40,39 @@ pickShow p =
     <|> showWithName (name p)
     <|> showForYear (year p)
 
--- Also works with >> but intent isn't as clear.
-pickShow' :: Person -> Maybe String
-pickShow' p =
+-- Using >> gives the same type as pickShow but a much different result.
+allShows' :: Person -> Maybe String
+allShows' p =
   favoriteShow (name p)
     >> showWithName (name p)
     >> showForYear (year p)
+
+eg1 = map pickShow [amy, cam, deb, monty]
+-- [Just "Batman",Just "The Simpsons",Nothing,Just "Monty Python's Flying Circus"]
+
+eg2 = map allShows' [amy, cam, deb, monty]
+-- [Nothing,Nothing,Nothing,Nothing] -- oops!
+
+--
+-- Turns out that pickShow' compiles but produces the wrong answer.
+-- It only gives a non Nothing result if each of the 3 ways of finding a show
+-- are successful and then it evaluates to the last result in the chain.
+-- If I add "Judging Amy" to the list of TV shows above, the following gives
+-- an answer.
+--
+eg3 = allShows' (Person "Amy" 1966)
+-- Just "Star Trek"
+
+--
+-- If we use >>=, we can find all the answers of the 3 different expressions (but
+-- only if each succeeds).
+--
+allShows'' :: Person -> Maybe (String, String, String)
+allShows'' p =
+  favoriteShow (name p) >>= \show1 -> 
+  showWithName (name p) >>= \show2 -> 
+  showForYear (year p) >>= \show3 -> 
+  return (show1, show2, show3)
+
+eg4 = map allShows'' [amy, cam, deb, monty, Person "Amy" 1966]
+-- [Nothing,Nothing,Nothing,Nothing,Just ("Batman","Judging Amy","Star Trek")]
