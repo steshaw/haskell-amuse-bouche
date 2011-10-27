@@ -6,10 +6,10 @@ import Data.Maybe (listToMaybe)
 
 tvShows :: [(Int, String)] -- a list of pairs
 tvShows = 
-    [ (1966, "Star Trek")
-    , (1969, "Monty Python's Flying Circus")
-    , (1989, "The Simpsons")
-    ]
+  [ (1966, "Star Trek")
+  , (1969, "Monty Python's Flying Circus")
+  , (1989, "The Simpsons")
+  ]
 
 showForYear :: Int -> Maybe String
 showForYear y = lookup y tvShows
@@ -35,6 +35,13 @@ monty = Person { name = "Monty", year = 1973 }
 
 pickShow :: Person -> Maybe String
 pickShow p =
-    favoriteShow (name p)
+  favoriteShow (name p)
     <|> showWithName (name p)
     <|> showForYear (year p)
+
+-- Also works with >> but intent isn't as clear.
+pickShow' :: Person -> Maybe String
+pickShow' p =
+  favoriteShow (name p)
+    >> showWithName (name p)
+    >> showForYear (year p)
