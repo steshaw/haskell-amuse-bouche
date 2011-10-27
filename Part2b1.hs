@@ -5,14 +5,15 @@ module Part2b1 where
 data L a = Nil | a ::: (L a)
 infixr 5 :::
 
--- dodgy Show instance. Is confused by mystery3.
 instance Show a => Show (L a) where
   show Nil = "[]"
-  show xs = "[" ++ (showMiddle xs) ++ "]"
+  show xs = "[" ++ (showFirst xs) ++ "]"
     where
-      showMiddle Nil = ""
-      showMiddle (a ::: b ::: xs) = (show a) ++ ", " ++ (show b) ++ (showMiddle xs)
-      showMiddle (a ::: Nil) = (show a)
+      showFirst Nil = ""
+      showFirst (a ::: xs) = (show a) ++ (showRest xs)
+
+      showRest Nil = ""
+      showRest (a ::: xs) = ", " ++ (show a) ++ (showRest xs)
 
 fromList :: [a] -> L a
 fromList xs = foldr (:::) Nil xs
