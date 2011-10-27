@@ -1,9 +1,8 @@
 module Part3b where
 
-import Control.Applicative
-import Data.List
-import Data.Maybe
-
+import Control.Applicative ((<|>))
+import Data.List (isInfixOf)
+import Data.Maybe (listToMaybe)
 
 tvShows :: [(Int, String)] -- a list of pairs
 tvShows = 
@@ -26,7 +25,6 @@ favoriteShow "Amy" = Just "Batman"
 favoriteShow "Bob" = Just "Iron Chef"
 favoriteShow _     = Nothing
 
-
 data Person = Person { name :: String, year :: Int }
     -- This has "named" fields, which act as accessor functions
 
@@ -40,5 +38,3 @@ pickShow p =
     favoriteShow (name p)
     <|> showWithName (name p)
     <|> showForYear (year p)
-
-
