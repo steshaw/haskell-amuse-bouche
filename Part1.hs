@@ -111,5 +111,11 @@ yellEachWord = eachWord yell
 eachWordOnEachLine :: (String -> String) -> String -> String
 eachWordOnEachLine f = eachLine (eachWord f)
 
+eachWordOnEachLine' :: (String -> String) -> String -> String
+eachWordOnEachLine' = eachLine . eachWord
+
 yellEachWordOnEachLine :: String -> String
 yellEachWordOnEachLine = eachWordOnEachLine yell
+
+yellEachWordOnEachLine' :: String -> String
+yellEachWordOnEachLine' = eachWordOnEachLine' yell
