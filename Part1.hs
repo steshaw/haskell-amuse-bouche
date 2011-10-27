@@ -83,6 +83,12 @@ eachLine f = unlines . map f . lines
 indentEachLine' :: String -> String
 indentEachLine' = eachLine indent
 
+eachLine' :: (String -> String) -> String -> String
+eachLine' f = byLines (map f)
+
+indentEachLine'' :: String -> String
+indentEachLine'' = eachLine' indent
+
 
 yell :: String -> String
 yell s = map toUpper s ++ "!!!"
