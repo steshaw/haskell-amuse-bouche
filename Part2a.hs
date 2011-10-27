@@ -17,6 +17,10 @@ dropOne :: List a -> List a
 dropOne (Link first rest) = rest
 dropOne EndOfList = EndOfList
 
+-- Forgot the case of EndOfList. Need ghci -Wall to see the compiler warning!
+dropOneOops :: List a -> List a
+dropOneOops (Link first rest) = rest
+
 justOne :: List a -> List a
 justOne (Link a _) = Link a EndOfList
 justOne EndOfList = EndOfList
