@@ -1,19 +1,29 @@
--- Here is an attempt to build a user-defined list with something like built-in syntax.
+--
+-- An attempt to build a user-defined list with something like built-in syntax.
+--
 module Part2b1 where
+
+import Data.List (intersperse)
 
 -- Note: cannot use :: rather than ::: but the compiler error isn't clear.
 data L a = Nil | a ::: (L a)
 infixr 5 :::
 
 instance Show a => Show (L a) where
-  show Nil = "[]"
-  show xs = "[" ++ (showFirst xs) ++ "]"
+  show xs = "[" ++ (intersperse ", " xs) ++ "]"
     where
-      showFirst Nil = ""
-      showFirst (a ::: xs) = (show a) ++ (showRest xs)
+      -- Similar to Data.List.intersperse (but that only works on built-in lists).
+      -- See mkString below.
+      intersperse :: (Show a) => String -> L a -> String
+      intersperse separator Nil = ""
+      intersperse separator (a ::: xs) = (show a) ++ (prependToAll separator xs)
 
-      showRest Nil = ""
-      showRest (a ::: xs) = ", " ++ (show a) ++ (showRest xs)
+      prependToAll :: (Show a) => String -> L a -> String
+      prependToAll _ Nil = ""
+      prependToAll separator (a ::: xs) = separator ++ (show a) ++ (prependToAll separator xs)
+
+mkString :: (Show a) => String -> [a] -> String
+mkString sep = concat . intersperse sep . map show
 
 fromList :: [a] -> L a
 fromList xs = foldr (:::) Nil xs
@@ -21,10 +31,11 @@ fromList xs = foldr (:::) Nil xs
 empty = Nil
 oneWord = "apple" ::: Nil
 twoWords = "banana" ::: "cantaloupe" ::: Nil
+threeWords = "banana" ::: "cantaloupe" ::: "orange" ::: Nil
 
 empty' = fromList []
 oneWord' = fromList ["apple"]
-twoWords' = fromList ["banana", "cantaloupe"]
+twoWords' = fromList ["banana", "cantaloupe", "orange"]
 
 mystery1 = "pear" ::: empty
 mystery2 = "peach" ::: oneWord
